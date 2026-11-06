@@ -473,9 +473,9 @@ class CoreEngine(QMainWindow):
     def _parse_arabic_intent(self, text: str) -> str:
         t = text.strip()
         
-        # أوامر إيقاف التشغيل وإغلاق الحاسبة (مدمج مع كلمة سر kali لتنفيذ فوري)
-        if any(keyword in t for keyword in ["إغلاق النظام", "أغلق الجهاز", "إيقاف التشغيل", "اطفاء", "poweroff", "shutdown"]):
-            return "echo 'kali' | sudo -S poweroff"
+        # التقاط جميع الاحتمالات للإطفاء أو الإغلاق بصيغها المختلفة
+        if any(kw in t for kw in ["إغلاق", "اغلاق", "أغلق", "أغلق", "إيقاف", "ايقاف", "اطفاء", "أطفئ", "poweroff", "shutdown"]):
+            return "poweroff"
 
         if re.search(r'(انشاء|إنشئ|عمل|اصنع|تكوين)\s+(مجلد|فلدر|ديركتوري)', t):
             target = re.sub(r'.*(مجلد|فلدر|ديركتوري)\s*', '', t).strip()
