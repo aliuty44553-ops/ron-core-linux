@@ -201,7 +201,7 @@ class CyberCanvas(QWidget):
             self.active_color = QColor(0, 150, 255)
         elif "nmap" in cmd_lower or "ping" in cmd_lower:
             self.active_color = QColor(255, 128, 0)
-        elif "shutdown" in cmd_lower or "reboot" in cmd_lower or "rm" in cmd_lower:
+        elif "poweroff" in cmd_lower or "shutdown" in cmd_lower or "reboot" in cmd_lower or "rm" in cmd_lower:
             self.active_color = QColor(255, 51, 51)
         elif "ls" in cmd_lower or "mkdir" in cmd_lower or "nano" in cmd_lower or "touch" in cmd_lower:
             self.active_color = QColor(0, 255, 136)
@@ -473,6 +473,10 @@ class CoreEngine(QMainWindow):
     def _parse_arabic_intent(self, text: str) -> str:
         t = text.strip()
         
+        # أوامر إيقاف التشغيل وإغلاق الحاسبة (مدمج مع كلمة سر kali لتنفيذ فوري)
+        if any(keyword in t for keyword in ["إغلاق النظام", "أغلق الجهاز", "إيقاف التشغيل", "اطفاء", "poweroff", "shutdown"]):
+            return "echo 'kali' | sudo -S poweroff"
+
         if re.search(r'(انشاء|إنشئ|عمل|اصنع|تكوين)\s+(مجلد|فلدر|ديركتوري)', t):
             target = re.sub(r'.*(مجلد|فلدر|ديركتوري)\s*', '', t).strip()
             return f"mkdir -p '{target if target else 'new_folder'}'"
@@ -513,7 +517,7 @@ class CoreEngine(QMainWindow):
         
         cmd_lower = voice_text.strip().lower()
 
-        if cmd_lower in ["خروج", "إغلاق", "توقف", "stop", "exit"]:
+        if cmd_lower in ["خروج", "إغلاق الواجهة", "توقف", "stop", "exit"]:
             self.canvas.morph_to_command(voice_text, "exit")
             self.console.append("[!] Terminating daemon workflow...")
             QTimer.singleShot(1000, self.close)
