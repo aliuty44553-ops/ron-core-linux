@@ -218,3 +218,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+*.save
+*.save.*
+*.zip
+file.txt
+RON_CORE_Release/
+venv/
+__pycache__/
+*.pyc
